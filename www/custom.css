@@ -1,0 +1,36 @@
+.content-wrapper,
+.right-side {
+  background-color: #ffffff;
+  font-size-adjust: 1.58;
+}
+
+/** 
+ Because the parcoords library uses inline styling for the labels and axes,
+ we have to override it with the !important label. This changes the styling
+ for both the tick labels and the titles of the axes.
+ */
+.parcoords text {
+  font-size: 12px !important;
+}
+
+#filterDataButton {
+  margin-bottom: 10px;
+}
+
+#resetDataButton {
+  margin-bottom: 10px;
+}
+
+.box {
+	margin-top: 10px;
+}
+
+
+/* Sets font sizes for sliders. */ 
+.irs-min, 
+.irs-max,
+.irs-from,
+.irs-to,
+.irs-grid-text{
+	font-size: 14px;
+}
