@@ -183,7 +183,6 @@ sec_per_hour    <- 60*60
 
 # Get historical streamflow data
 strmflw <- read.csv("streamflow.csv", header = TRUE)
-print(strmflw)
 
 # Remove missing values
 miss_val      <- which(is.na(strmflw[, 4])) 
@@ -226,121 +225,117 @@ lce <- function(cap_cost, cost_om_pres_val, energy_pres_val) {
 }
 
 years <- 1:length(unique(arun_hydro[,1]))
-print(years)
 strmflw_ann <- as.matrix(group_by(arun_hydro, Year) %>% summarize(flow = sum(MCM)))
-print(strmflw_ann)
 energy_ann  <- as.matrix(group_by(arun_hydro, Year) %>% summarize(energy = sum(KWHcap)))
 
-print(energy_ann)
+energy_ann_avg  <- mean(energy_ann[, 2])
 
-# energy_ann_avg  <- mean(energy_ann[, 2])
+energy_pres_val <- energy_ann_avg*(1+dis_rate_base)^(-years)
+cost_om_pres_val <- cost_om_base*(1+dis_rate_base)^(-years)
 
-# energy_pres_val <- energy_ann_avg*(1+dis_rate_base)^(-years)
-# cost_om_pres_val <- cost_om_base*(1+dis_rate_base)^(-years)
-# 
-# # Capital cost sensitivity
-# LCE_capital_cost <- lce(cost_cap_range,
-#                         sum(cost_om_pres_val),
-#                         sum(energy_pres_val))
-# 
-# # O&M cost sensitivity
-# cost_om_pres_val_range <- array(NA, c(length(years), length(cost_om_range)))
-# for (i in 1:length(cost_om_range)) {
-#   cost_om_pres_val_range[,i] <- cost_om_range[i]*(1+dis_rate_base)^(-years)
-# }
-# sum_cost_om_pres_val <- apply(cost_om_pres_val_range, MARGIN=2, sum)
-# LCE_om <- lce(cost_cap_base,
-#               sum_cost_om_pres_val,
-#               sum(energy_pres_val))
+#Capital cost sensitivity
+LCE_capital_cost <- lce(cost_cap_range,
+                        sum(cost_om_pres_val),
+                        sum(energy_pres_val))
 
-# # Discount rate sensitivity
-# energy_pres_val_range <- array(NA, c(length(years), length(dis_rate_range)))
-# for (i in 1:length(dis_rate_range)) {
-#   energy_pres_val_range[,i] <- energy_ann_avg*(1+dis_rate_range[i])^(-years)
-#   cost_om_pres_val_range[,i] <- cost_om_base*(1+dis_rate_range[i])^(-years)
-# }
-# sum_energy_pres_val <- apply(energy_pres_val_range, MARGIN=2, sum)
-# sum_cost_om_pres_val <- apply(cost_om_pres_val_range, MARGIN=2, sum)
-# LCE_dscnt <- lce(cost_cap_base,
-#                  sum_cost_om_pres_val,
-#                  sum_energy_pres_val)
-# 
-# # Streamflow variability sensitivity
-# num_stoch <- 19
-# energy_stoch_1st <- seq(min(energy_ann[,2]), max(energy_ann[,2]), 
-#                         (max(energy_ann[,2])-min(energy_ann[,2]))/(econ_life-1))
-# energy_stoch_last <- seq(max(energy_ann[,2]), min(energy_ann[,2]), 
-#                          -(max(energy_ann[,2])-min(energy_ann[,2])) / (econ_life-1))
-# energy_stoch <- array(NA,c(length(years),num_stoch))
-# for (i in 1:num_stoch) {
-#   order <- sample(1985:2006,length(years),replace=T)
-#   energy_stoch[,i] <- energy_ann[sapply(order, function(x) which(energy_ann[,1] == x)),2]
-# }
-# energy_range <- cbind(energy_stoch_1st,energy_stoch,energy_stoch_last)
-# energy_range_pres_val <- array(NA,c(length(years),dim(energy_range)[2]))
-# for (i in 1:dim(energy_range)[2]) {
-#   energy_range_pres_val[,i] <- energy_range[,i]*(1+dis_rate_base)^(-years)
-# }
-# sum_energy_range_pres_val <- apply(energy_range_pres_val,MARGIN=2,sum)
-# LCE_qvar <- lce(cost_cap_base,
-#                 sum(cost_om_pres_val),
-#                 sum_energy_range_pres_val)
-# 
-# # Streamflow mean sensitivity
-# sd_flow <- sd(strmflw_ann[,2])
-# mean_flow <- mean(strmflw_ann[,2])
-# cv_strmflw_ann <- sd_flow / mean_flow
-# #sd(strmflw[,5])/mean(strmflw[,5]) #check cv of daily streamflow - bigger than cv annual
-# 
-# DQ_pos <- ((mean_flow*1.5-mean_flow)/mean_flow) #Either a custom ratio from the stress test or cv_strmflw_ann
-# DQ_neg <- ((mean_flow-mean_flow*0.7)/mean_flow) #Either a custom ratio from the stress test or cv_strmflw_ann
-# KWH_mcm <- 0.002725*arun_hydro[,5]*H*e*1e6
-# high_flow <- arun_hydro[,5]*(1+DQ_pos)
-# low_flow <- arun_hydro[,5]*(1-DQ_neg)
-# arun_hydro[,8] <- high_flow
-# arun_hydro[,9] <- low_flow
-# arun_hydro[,10] <- 0.002725*arun_hydro[,8]*H*e*1e6
-# arun_hydro[,11] <- 0.002725*arun_hydro[,9]*H*e*1e6
-# 
-# energy_day_high <- sapply(arun_hydro[,10],function(x) min(x,kwhr_cap))
-# arun_hydro[,12] <- energy_day_high
-# energy_day_low <- sapply(arun_hydro[,11],function(x) min(x,kwhr_cap))
-# arun_hydro[,13] <- energy_day_low
-# colnames(arun_hydro) <- c("Year","Month","Day","m3s","MCM","KWH","KWHcap","high_flow","low_flow","KWH_high","KWH_low","KWHcap_high","KWHcap_low")
-# 
-# strmflw_ann_high <- as.matrix(group_by(arun_hydro,Year) %>% summarize(flow=sum(high_flow)))
-# energy_ann_high <- as.matrix(group_by(arun_hydro,Year) %>% summarize(energy=sum(KWHcap_high)))
-# energy_ann_avg_high <- as.numeric(group_by(arun_hydro,Year) %>% summarize(energy=sum(KWHcap_high)) %>% summarize(avg=mean(energy)))
-# energy_pres_val_high <- energy_ann_avg_high*(1+dis_rate_base)^(-years)
-# LCE_qshift_high <- lce(cost_cap_base,
-#                        sum(cost_om_pres_val),
-#                        sum(energy_pres_val_high))
-# 
-# strmflw_ann_low <- as.matrix(group_by(arun_hydro,Year) %>% summarize(flow=sum(low_flow)))
-# energy_ann_low <- as.matrix(group_by(arun_hydro,Year) %>% summarize(energy=sum(KWHcap_low)))
-# energy_ann_avg_low <- as.numeric(group_by(arun_hydro,Year) %>% summarize(energy=sum(KWHcap_low)) %>% summarize(avg=mean(energy)))
-# energy_pres_val_low <- energy_ann_avg_low*(1+dis_rate_base)^(-years)
-# LCE_qshift_low <- lce(cost_cap_base,
-#                       sum(cost_om_pres_val),
-#                       sum(energy_pres_val_low))
-# 
-# LCE_qshift <- c(LCE_qshift_low, LCE_qshift_high)
-# 
-# # Create box plot
-# sens_analysis <- cbind(LCE_capital_cost, LCE_om, LCE_dscnt, LCE_qvar, LCE_qshift)
-# colnames(sens_analysis) <- c("capital.cost","om.cost","dscnt.rate","q.var","q.shift")
-# sens_analysis <- melt(as.data.frame(sens_analysis), variable.name = "factor")
-# 
-# plot <- ggplot(sens_analysis, aes(factor(factor), value)) + geom_boxplot() +
-#   #theme_classic() +
-#   scale_x_discrete(labels=c("Capital Cost", "O&M Cost", "Discount Rate", "Q Var", "Q Shift"))	+
-#   scale_y_continuous(limits = c(0,0.06)) +
-#   labs(list(title = "Phase 2 Sensitivity Analysis", x = "", y = "Levelized\nCost\n($/KwH)")) +
-#   theme_classic() +
-#   theme(axis.title.y = element_text(angle = 0),
-#         axis.line.x = element_line(colour = 'black', linetype = 'solid'),
-#         axis.line.y = element_line(colour = 'black', linetype = 'solid')) +
-#   geom_hline(yintercept=price, colour = "red")
-# plot
+# O&M cost sensitivity
+cost_om_pres_val_range <- array(NA, c(length(years), length(cost_om_range)))
+for (i in 1:length(cost_om_range)) {
+  cost_om_pres_val_range[,i] <- cost_om_range[i]*(1+dis_rate_base)^(-years)
+}
+sum_cost_om_pres_val <- apply(cost_om_pres_val_range, MARGIN=2, sum)
+LCE_om <- lce(cost_cap_base,
+              sum_cost_om_pres_val,
+              sum(energy_pres_val))
+
+# Discount rate sensitivity
+energy_pres_val_range <- array(NA, c(length(years), length(dis_rate_range)))
+for (i in 1:length(dis_rate_range)) {
+ energy_pres_val_range[,i] <- energy_ann_avg*(1+dis_rate_range[i])^(-years)
+ cost_om_pres_val_range[,i] <- cost_om_base*(1+dis_rate_range[i])^(-years)
+}
+sum_energy_pres_val <- apply(energy_pres_val_range, MARGIN=2, sum)
+sum_cost_om_pres_val <- apply(cost_om_pres_val_range, MARGIN=2, sum)
+LCE_dscnt <- lce(cost_cap_base,
+                 sum_cost_om_pres_val,
+                 sum_energy_pres_val)
+
+# Streamflow variability sensitivity
+num_stoch <- 19
+energy_stoch_1st <- seq(min(energy_ann[,2]), max(energy_ann[,2]),
+                       (max(energy_ann[,2])-min(energy_ann[,2]))/(econ_life-1))
+energy_stoch_last <- seq(max(energy_ann[,2]), min(energy_ann[,2]),
+                        -(max(energy_ann[,2])-min(energy_ann[,2])) / (econ_life-1))
+energy_stoch <- array(NA,c(length(years),num_stoch))
+for (i in 1:num_stoch) {
+ order <- sample(1985:2006,length(years),replace=T)
+ energy_stoch[,i] <- energy_ann[sapply(order, function(x) which(energy_ann[,1] == x)),2]
+}
+energy_range <- cbind(energy_stoch_1st,energy_stoch,energy_stoch_last)
+energy_range_pres_val <- array(NA,c(length(years),dim(energy_range)[2]))
+for (i in 1:dim(energy_range)[2]) {
+ energy_range_pres_val[,i] <- energy_range[,i]*(1+dis_rate_base)^(-years)
+}
+sum_energy_range_pres_val <- apply(energy_range_pres_val,MARGIN=2,sum)
+LCE_qvar <- lce(cost_cap_base,
+                sum(cost_om_pres_val),
+                sum_energy_range_pres_val)
+
+# Streamflow mean sensitivity
+sd_flow <- sd(strmflw_ann[,2])
+mean_flow <- mean(strmflw_ann[,2])
+cv_strmflw_ann <- sd_flow / mean_flow
+#sd(strmflw[,5])/mean(strmflw[,5]) #check cv of daily streamflow - bigger than cv annual
+
+DQ_pos <- ((mean_flow*1.5-mean_flow)/mean_flow) #Either a custom ratio from the stress test or cv_strmflw_ann
+DQ_neg <- ((mean_flow-mean_flow*0.7)/mean_flow) #Either a custom ratio from the stress test or cv_strmflw_ann
+KWH_mcm <- 0.002725*arun_hydro[,5]*H*e*1e6
+high_flow <- arun_hydro[,5]*(1+DQ_pos)
+low_flow <- arun_hydro[,5]*(1-DQ_neg)
+arun_hydro[,8] <- high_flow
+arun_hydro[,9] <- low_flow
+arun_hydro[,10] <- 0.002725*arun_hydro[,8]*H*e*1e6
+arun_hydro[,11] <- 0.002725*arun_hydro[,9]*H*e*1e6
+
+energy_day_high <- sapply(arun_hydro[,10],function(x) min(x,kwhr_cap))
+arun_hydro[,12] <- energy_day_high
+energy_day_low <- sapply(arun_hydro[,11],function(x) min(x,kwhr_cap))
+arun_hydro[,13] <- energy_day_low
+colnames(arun_hydro) <- c("Year","Month","Day","m3s","MCM","KWH","KWHcap","high_flow","low_flow","KWH_high","KWH_low","KWHcap_high","KWHcap_low")
+
+strmflw_ann_high <- as.matrix(group_by(arun_hydro,Year) %>% summarize(flow=sum(high_flow)))
+energy_ann_high <- as.matrix(group_by(arun_hydro,Year) %>% summarize(energy=sum(KWHcap_high)))
+energy_ann_avg_high <- as.numeric(group_by(arun_hydro,Year) %>% summarize(energy=sum(KWHcap_high)) %>% summarize(avg=mean(energy)))
+energy_pres_val_high <- energy_ann_avg_high*(1+dis_rate_base)^(-years)
+LCE_qshift_high <- lce(cost_cap_base,
+                       sum(cost_om_pres_val),
+                       sum(energy_pres_val_high))
+
+strmflw_ann_low <- as.matrix(group_by(arun_hydro,Year) %>% summarize(flow=sum(low_flow)))
+energy_ann_low <- as.matrix(group_by(arun_hydro,Year) %>% summarize(energy=sum(KWHcap_low)))
+energy_ann_avg_low <- as.numeric(group_by(arun_hydro,Year) %>% summarize(energy=sum(KWHcap_low)) %>% summarize(avg=mean(energy)))
+energy_pres_val_low <- energy_ann_avg_low*(1+dis_rate_base)^(-years)
+LCE_qshift_low <- lce(cost_cap_base,
+                      sum(cost_om_pres_val),
+                      sum(energy_pres_val_low))
+
+LCE_qshift <- c(LCE_qshift_low, LCE_qshift_high)
+
+# Create box plot
+sens_analysis <- cbind(LCE_capital_cost, LCE_om, LCE_dscnt, LCE_qvar, LCE_qshift)
+colnames(sens_analysis) <- c("capital.cost","om.cost","dscnt.rate","q.var","q.shift")
+sens_analysis <- melt(as.data.frame(sens_analysis), variable.name = "factor")
+
+plot <- ggplot(sens_analysis, aes(factor(factor), value)) + geom_boxplot() +
+   #theme_classic() +
+   scale_x_discrete(labels=c("Capital Cost", "O&M Cost", "Discount Rate", "Q Var", "Q Shift"))	+
+   scale_y_continuous(limits = c(0,0.06)) +
+   labs(list(title = "Phase 2 Sensitivity Analysis", x = "", y = "Levelized\nCost\n($/KwH)")) +
+   theme_classic() +
+   theme(axis.title.y = element_text(angle = 0),
+         axis.line.x = element_line(colour = 'black', linetype = 'solid'),
+         axis.line.y = element_line(colour = 'black', linetype = 'solid')) +
+   geom_hline(yintercept=price, colour = "red")
+plot
 
 ```
