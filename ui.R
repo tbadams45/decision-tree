@@ -18,15 +18,15 @@ body <- dashboardBody(
 
     tabItem(tabName = "tab_phase1",
       dtphase1::phase1UI("phase1")
-    )
+    ),
 
-    #tabItem(tabName="tab_phase2", {
-    #   phase2UI("phase2")
-    # }),
-    #
-    # tabItem(tabName="tab_phase3", {
-    #   phase3UI("phase3")
-    # }),
+    tabItem(tabName="tab_phase2", {
+       shiny::includeMarkdown("phases/phase2/phase2.md")
+     }),
+
+    tabItem(tabName="tab_phase3", {
+      phase3UI("phase3")
+    })
     #
     # tabItem(tabName="tab_phase4", {
     #   phase4UI("phase4")
