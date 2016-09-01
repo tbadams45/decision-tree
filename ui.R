@@ -5,8 +5,7 @@ sidebar <- dashboardSidebar(width = 200, hr(), {
     menuItem("Phase 3", tabName = "tab_phase3", icon = icon("circle-o")),
     menuItem("Phase 4", tabName = "tab_phase4", icon = icon("circle-o")),
     tags$style(type = 'text/css',
-      "footer{position: absolute; bottom:2%; left: 5%; padding:5px;}"),
-    HTML('<footer> &copy; 2016 HRG </footer>')
+      "footer{position: absolute; bottom:2%; left: 5%; padding:5px;}")
   )
 })
 
