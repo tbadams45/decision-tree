@@ -439,8 +439,7 @@ outline for your own work.
        theme_classic() +
        theme(axis.title.y = element_text(angle = 0),
              axis.line.x = element_line(colour = 'black', linetype = 'solid'),
-             axis.line.y = element_line(colour = 'black', linetype = 'solid')) +
-       geom_hline(yintercept=price, colour = "red")
+             axis.line.y = element_line(colour = 'black', linetype = 'solid'))
     plot
 
 ![](phase2_files/figure-markdown_strict/appendix-code-1.png)
