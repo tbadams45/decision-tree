@@ -25,11 +25,11 @@ body <- dashboardBody(
 
     tabItem(tabName="tab_phase3", {
       phase3UI("phase3")
+    }),
+
+    tabItem(tabName="tab_phase4", {
+      phase4UI("phase4", base_clim)
     })
-    #
-    # tabItem(tabName="tab_phase4", {
-    #   phase4UI("phase4")
-    # })
   ) #tabitems close
 ) #dashboard close
 

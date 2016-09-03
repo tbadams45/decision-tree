@@ -16,14 +16,14 @@ First, we are **interested in changes in streamflow, rather than changes
 in climate** (e.g. temperature, precipitation, or other climatic
 variables). Focusing our attention on streamflow allows us to avoid
 having to create a hydrologic model before we conduct a sensitivity
-analysis, which saves significant time at this stage. Because climate
-and streamflow are often tightly linked, we can safely use sensitivity
-to streamflow as a proxy for sensitivity to climate.
+analysis, which saves significant time in this phase. Furthermore,
+because climate and streamflow are often tightly linked, we can safely
+use sensitivity to streamflow as a proxy for sensitivity to climate.
 
 Next, we must **determine what it means to have a successful project**.
 In Phase 2, this requires choosing a performance metric that we will use
-to evaluate project outcomes. This could be the NPV of the project, its
-reliability or safe yield, or anything else.
+to evaluate project outcomes. This metric could be NPV, reliability,
+safe yield, or any other metric deemed relevant to the project at hand.
 
 After choosing a performance metric, we must **choose other key,
 non-climatic factors to evaluate in addition to streamflow**. This will
@@ -43,10 +43,10 @@ approximations and will be fine-tuned if needed later in the process,
 but they should be close enough to give a sense of the real picture.
 
 Once we have all of this information, we can **conduct a "one-at-a-time"
-sensitivity analysis**, varying one factor at a time within our defined
-ranges to see how changes in that factor affect our performance metric.
-It follows, then, that we must also pick sensible base values for each
-factor, so that we can hold all but one factor constant.
+sensitivity analysis**, varying each factor within our defined ranges to
+see how changes in that factor affect our performance metric. We must
+also pick sensible base values for each factor, so that we can hold all
+but one factor constant.
 
 Ultimately, the most important output we receive from Phase 2 is a box
 plot which details the **results** of our sensitivity analysis.
@@ -58,8 +58,9 @@ performance metric plotted on the y-axis. The boxes define the
 sensitivity of the performance metric to variations in that factor. (For
 more information on how to read a box plot, [see this
 article.](http://www.wellbeingatschool.org.nz/information-sheet/understanding-and-interpreting-box-plots))
-If our box for streamflow is sufficiently large compared those of the
-other factors, than we may decide that we should move to Phase 3 and
+If our box for streamflow is sufficiently large compared to those of the
+other factors, than we may decide that our project is relatively
+sensitive to climate change and that we should move to Phase 3 and
 perform a climate stress test. If, however, our box for streamflow is
 very small compared to other, non-climatic, factors, then the focus of
 our future work should be spent understanding and minimizing the
@@ -70,8 +71,7 @@ the project to conduct our analysis. This data gathering is a crucial
 component of Phase 2, and requires collaboration from all stakeholders.
 
 The rest of this document describes each step required for Phase 2. We
-explain how each step contributes to our final product (the box plot
-displaying the results of our sensitivity analysis) Throughout, we use
+explain how each step contributes to our final plot. Throughout, we use
 an example run of the river hydropower plant located in Southern Asia to
 illustrate some of the actions that will be taken at each step. The
 appendix contains the R code used to perform the sensitivity analysis,
@@ -84,8 +84,8 @@ Before we begin collecting any data, we must first determine what to
 collect data *on*. This requires:
 
 -   Defining the factors we wish to perform our sensitivity analysis on.
-    This will certainly include streamflow, but will also include
-    several non-climatic factors.
+    This will include streamflow, but will also include several
+    non-climatic factors.
 -   Defining the performance metric we will use to evaluate our project.
 
 These definitions are best performed in the context of a stakeholder
@@ -94,8 +94,8 @@ selected the levelized cost of energy as our performance metric, and
 capital cost, O&M cost, and discount rate as our non-climatic factors.
 Due to the nature of the monsoon season in Southern Asia and its effect
 on hydropower, for streamflow we decided to examine both shifts in mean
-streamflow throughout the year (Q Shift), and shifts in variability of
-that streamflow (Q Var).
+annual streamflow (Q Shift), and shifts in seasonal variability of that
+streamflow (Q Var).
 
 After Step 1 has been completed, we have all we need to define our plot
 axes. The rest of the steps will help us to fill in the plot with actual
@@ -123,15 +123,16 @@ very small range. For this reason, these ranges should be carefully
 chosen based on two factors: the current best expert knowledge on what
 values each factor might take, and the amount of uncertainty in this
 expert knowledge. It is generally best to err on the side of caution and
-choose a larger range than is expected, to avoid assumptions from
-guiding a project away from progressing to Phase 3.
+choose a larger range than is expected, to avoid assumptions which may
+guide a project away from progressing to Phase 3.
 
-The information to define ranges often comes from a variety of sources.
-For factors that relate to the construction or operation of the project,
-consultancy or feasibility studies may include the required information.
-For other non-climatic factors (e.g. population growth), a national
-water plan, if one exists, is often the best source. These water plans
-may also provide insight for how wide our streamflow range should be.
+The information that helps us to define ranges often comes from a
+variety of sources. For factors that relate to the construction or
+operation of the project, consultancy or feasibility studies may include
+the required information. For other non-climatic factors (e.g.
+population growth), a national water plan, if one exists, is often the
+best source. These water plans may also provide insight for how wide our
+streamflow range should be.
 
 In the case of our example run of the river hydropower plant, Phase 2
 ultimately consists of the following actions:
@@ -141,7 +142,8 @@ ultimately consists of the following actions:
     efficiency, and the expected economic lifetime.
 -   We set base values (a single number) and ranges (an array
     of numbers) for each of our factors: capital cost, discount rate,
-    and O&M. **streamflow?**
+    and O&M. For streamflow, we use the historical record as a baseline
+    set of values.
 -   We determined the price of electricity and set it as a constant.
 
 Step 3: Gather streamflow and climate data
@@ -149,19 +151,18 @@ Step 3: Gather streamflow and climate data
 
 Step 3 runs parallel to step 2 and involves collecting historical
 streamflow, weather, and climate data. Technically, only streamflow data
-is required for this step, as we will not use any other climate data for
-our ultimate sensitivity analysis. However, if there is a reasonable
-expectation that the project will need to continue to Phase 3 of the
-Decision Tree Framework, collecting weather and climate data at this
-time is often the most convenient.
+is required for this step, as we will not use any other climate data in
+our sensitivity analysis. However, if there is a reasonable expectation
+that the project will need to continue to Phase 3, collecting weather
+and climate data at this time is often the most convenient.
 
-Sources for this kind of data can vary greatly depending on the region
-and project of interest. Agencies like NOAA offer globally gridded
-data-sets, which can offer coarse data at the scale of several hundred
-square kilometers. For more fine-grained data, often a national
-meteorological service exists provides local weather and climate data.
-In almost all cases, however, the most expedient way to collect this
-information will be to meet with the stakeholders, who will be more
+Sources for streamflow and climate data can vary greatly depending on
+the region and project of interest. Agencies like NOAA offer globally
+gridded data-sets, which provide coarse data at the scale of several
+hundred square kilometers. For more fine-grained data, often a national
+meteorological service exists provides which local weather and climate
+data. In almost all cases, however, the most expedient way to collect
+this information will be to meet with the stakeholders, who will be more
 familiar with their own region's data collection efforts and will have
 easier access to this data.
 
@@ -170,10 +171,11 @@ prepared the data for use by removing missing values and obvious data
 entry errors. We can combine this data with our design information of
 our hydropower plant to calculate the energy produced on any date within
 our historical range (1985-2006), which we need in order to calculate
-the levelized cost of energy for our hydropower plant.
+our performance metric: the levelized cost of energy for our hydropower
+plant.
 
-Step 4: Define equations that relate factors with our performance metric
-------------------------------------------------------------------------
+Step 4: Define equations that relate factors to our performance metric
+----------------------------------------------------------------------
 
 Now that we have all of our data, we need to relate each factor to our
 performance metric. The equations to do this should be relatively
@@ -199,8 +201,8 @@ our actual sensitivity analysis. This follows a basic algorithm:
     defined for that factor.
 3.  Feed each value in the array created in 2 into the equation defined
     for that factor, along with the base values for all of the
-    other factors. This will create an array of your performance metric
-    that results from the range of values for your chosen factor.
+    other factors. This will create an array of our performance metric
+    resulting from the range of values for the factor chosen in 2.
 4.  Repeat 2 and 3 for each factor.
 5.  With the data produced from 1-4, produce a box plot.
 
@@ -218,14 +220,14 @@ chose, our performance metric is most sensitive to capital cost and
 discount rate. Neither the ranges chosen for Q Var or Q Shift result in
 a relatively significant change in our performance metric. Due to this,
 it would be reasonable to conclude that Phase 3 is not necessary for
-this project, opting instead to devote resources toward a more detailed
-analysis of capital cost and discount rate.
+this project, and we may opt instead to devote resources toward a more
+detailed analysis of capital cost and discount rate.
 
 Appendix: Example Code
 ======================
 
-This code provides an example sensitivity analysis performed for a run
-of the river hydropower plant. You can use this to provide a rough
+The code below performs a sensitivity analysis for the example project
+referred to throughout this section. You can use it to provide a rough
 outline for your own work.
 
     # install packages required for our analysis
