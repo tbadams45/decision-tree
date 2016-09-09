@@ -262,7 +262,6 @@ function reset_brush(id){
 
   row_ids <- reactive({
     ids <- dec_space_selected()$ID
-    print(ids)
     ids
   })
 
