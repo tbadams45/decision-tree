@@ -1,11 +1,40 @@
-# install and load packages.
-if (!require("pacman")) install.packages("pacman") # package managment tool
-pacman::p_load(stats, plyr, magrittr, truncnorm, RColorBrewer, sirad, tidyr, readr, lubridate, ggplot2, LaplacesDemon, mvtnorm, shiny, shinyjs, shinyBS, htmlwidgets, shinythemes, shinydashboard, plotly, dplyr, wrviz, devtools, ggthemes, rmarkdown)
-pacman::p_load_gh(c("timelyportfolio/parcoords", "tbadams45/wrviz", "tbadams45/dtphase1", "rstudio/DT"))
-if(packageVersion("DT") < "0.1.57") {
-  pacman::p_install_gh(c("rstudio/DT"))
-  pacman::p_load_gh(c("rstudio/DT"))
-}
+# required packages
+library(stats)
+library(plyr)
+library(magrittr)
+library(truncnorm)
+library(RColorBrewer)
+library(sirad)
+library(tidyr)
+library(readr)
+library(lubridate)
+library(ggplot2)
+library(LaplacesDemon)
+library(mvtnorm)
+library(shiny)
+library(shinyjs)
+library(shinyBS)
+library(htmlwidgets)
+library(shinythemes)
+library(shinydashboard)
+library(plotly)
+library(dplyr)
+library(wrviz) # tbadams45/wrviz
+library(devtools)
+library(ggthemes)
+library(rmarkdown)
+library(parcoords) # timelyportfolio/parcoords
+library(dtphase1)
+library(DT) # rstudio/DT, >= 0.1.57
+
+
+# if (!require("pacman")) install.packages("pacman") # package managment tool
+# pacman::p_load(stats, plyr, magrittr, truncnorm, RColorBrewer, sirad, tidyr, readr, lubridate, ggplot2, LaplacesDemon, mvtnorm, shiny, shinyjs, shinyBS, htmlwidgets, shinythemes, shinydashboard, plotly, dplyr, wrviz, devtools, ggthemes, rmarkdown)
+# pacman::p_load_gh(c("timelyportfolio/parcoords", "tbadams45/wrviz", "tbadams45/dtphase1", "rstudio/DT"))
+# if(packageVersion("DT") < "0.1.57") {
+#   pacman::p_install_gh(c("rstudio/DT"))
+#   pacman::p_load_gh(c("rstudio/DT"))
+# }
 
 # generate markdown file for phase 2
 rmarkdown::render('phases/phase2/phase2.Rmd')
